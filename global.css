@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+    --color-primary-50: '#1e6f9f';
+    --color-primary-100: '#4ea8de';
+    --color-primary-200: '#5e60ce';
+    --color-primary-300: '#8284fa';
+
+
+
+}

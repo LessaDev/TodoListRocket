@@ -18,12 +18,13 @@ export default function Home() {
       setTasks(() => [
         ...tasks,
         {
+          id: tasks.length > 0 ? Math.max(...tasks.map((task) => task.id)) + 1 : 1,
           text: textTask,
           checked: false,
-          handleRemove: () => console.log('remover'),
-          handleChangeChecked: () => console.log('mudar'),
+          modalOpen: false,
         },
       ]);
+      console.log(tasks);
     }
     setNewTasks('');
   }
@@ -43,10 +44,20 @@ export default function Home() {
 
   function handleChangeTask(task: TaskProps) {
     setTasks((prevState) =>
-      prevState.map((item) =>
-        item.text === task.text ? { ...item, checked: !item.checked } : item
-      )
+      prevState.map((item) => (item.id === task.id ? { ...item, checked: !item.checked } : item))
     );
+  }
+
+  function handleUpdateTextTask(task: TaskProps, updatedTaskText: string) {
+    if (updatedTaskText === '') {
+      Alert.alert('Tarefa não editada', 'Nome da tarefa não alterado!');
+    } else if (tasks.map((item) => item.text === updatedTaskText).includes(true)) {
+      Alert.alert('Tarefa já existe', 'Uma tarefa com o mesmo nome já existe');
+    } else {
+      setTasks((prevState) =>
+        prevState.map((item) => (item.id === task.id ? { ...item, text: updatedTaskText } : item))
+      );
+    }
   }
 
   const completedTasks = tasks.filter((task) => task.checked);
@@ -97,10 +108,13 @@ export default function Home() {
         keyExtractor={(item) => item.text}
         renderItem={({ item }) => (
           <Task
+            id={item.id}
             text={item.text}
             checked={item.checked}
             handleRemove={() => handleRemoveTask(item)}
             handleChangeChecked={() => handleChangeTask(item)}
+            handleUpdateTextTask={(textUpdated) => handleUpdateTextTask(item, textUpdated)}
+            modalOpen={item.modalOpen}
           />
         )}
         showsVerticalScrollIndicator
